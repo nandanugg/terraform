@@ -1,0 +1,134 @@
+resource "aws_budgets_budget" "five_dollar_spend_limit" {
+  name = "five_dollar_spend_limit"
+  budget_type  = "COST"
+  limit_amount = "10"
+  limit_unit   = "USD"
+  time_unit ="MONTHLY" 
+}
+
+resource "aws_budgets_budget_action" "five_dollar_spend_limit" {
+  budget_name        = aws_budgets_budget.five_dollar_spend_limit.name
+  action_type        = "RUN_SSM_DOCUMENTS"
+  approval_model     = "AUTOMATIC"
+  notification_type  = "ACTUAL"
+  execution_role_arn = aws_iam_role.budget_stop_ec2_role.arn
+  action_threshold {
+    action_threshold_type  = "ABSOLUTE_VALUE"
+    action_threshold_value = 10
+  }
+
+  definition {
+    ssm_action_definition {
+        action_sub_type = "STOP_EC2_INSTANCES"
+        instance_ids  = [
+            # aws_instance.nanda_instance.id,
+            aws_instance.nanda_big_instance.id
+        ]
+        region = var.region
+    }
+  }
+
+  subscriber {
+    address           = "nandanugg@gmail.com"
+    subscription_type = "EMAIL"
+  }
+}
+
+# Create the IAM Role
+resource "aws_iam_role" "budget_stop_ec2_role" {
+  name = "budget_stop_ec2_role"
+
+  assume_role_policy = jsonencode({
+    Version   = "2012-10-17",
+    Statement = [
+      {
+        Effect    = "Allow",
+        Principal = {
+          Service = ["budgets.amazonaws.com","ec2.amazonaws.com"]
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "allow_assume_budget_stop_ec2_role" {
+  name        = "AllowAssumeBudgetStopEC2Role"
+  description = "Allow assuming the budget_stop_ec2_role for stopping EC2 instances"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = "sts:AssumeRole"
+        Resource = aws_iam_role.budget_stop_ec2_role.arn
+      },
+    ]
+  })
+}
+
+
+# Attach the Policies to the Role
+resource "aws_iam_role_policy_attachment" "attach_ec2_stop_instances_policy" {
+  role       = aws_iam_role.budget_stop_ec2_role.name
+  policy_arn = aws_iam_policy.ec2_stop_instances_policy.arn
+}
+
+resource "aws_iam_role_policy_attachment" "attach_send_budget_notification_policy" {
+  role       = aws_iam_role.budget_stop_ec2_role.name
+  policy_arn = aws_iam_policy.send_budget_notification_policy.arn
+
+}
+resource "aws_iam_role_policy_attachment" "attach_ssm_start_automation_execution_ec2_policy" {
+  role       = aws_iam_role.budget_stop_ec2_role.name
+  policy_arn = aws_iam_policy.ssm_start_automation_execution.arn
+}
+
+resource "aws_iam_policy" "ssm_start_automation_execution" {
+  name        = "SSMStartAutomationExecutionPolicy"
+  description = "Allows starting SSM automation executions for stopping EC2 instances"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = "ssm:StartAutomationExecution",
+        Resource = "arn:aws:ssm:ap-southeast-1::automation-definition/AWS-StopEC2Instance:*"
+      }
+    ]
+  })
+}
+
+
+resource "aws_iam_policy" "ec2_stop_instances_policy" {
+  name        = "ec2_stop_instances_policy"
+  path        = "/"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = "ec2:StopInstances"
+        Resource = "*"
+      },
+    ]
+  })
+}
+resource "aws_iam_policy" "send_budget_notification_policy" {
+  name        = "send_budget_notification_policy"
+  path        = "/"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = "sns:Publish"
+        Resource = "*"
+      },
+    ]
+  })
+}
