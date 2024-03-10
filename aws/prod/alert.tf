@@ -21,7 +21,6 @@ resource "aws_budgets_budget_action" "five_dollar_spend_limit" {
     ssm_action_definition {
         action_sub_type = "STOP_EC2_INSTANCES"
         instance_ids  = [
-            # aws_instance.nanda_instance.id,
             aws_instance.nanda_big_instance.id
         ]
         region = var.region
