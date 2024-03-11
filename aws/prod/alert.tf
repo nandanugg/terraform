@@ -1,9 +1,9 @@
 resource "aws_budgets_budget" "five_dollar_spend_limit" {
-  name = "five_dollar_spend_limit"
+  name         = "five_dollar_spend_limit"
   budget_type  = "COST"
   limit_amount = "10"
   limit_unit   = "USD"
-  time_unit ="MONTHLY" 
+  time_unit    = "MONTHLY"
 }
 
 resource "aws_budgets_budget_action" "five_dollar_spend_limit" {
@@ -19,11 +19,11 @@ resource "aws_budgets_budget_action" "five_dollar_spend_limit" {
 
   definition {
     ssm_action_definition {
-        action_sub_type = "STOP_EC2_INSTANCES"
-        instance_ids  = [
-            aws_instance.nanda_big_instance.id
-        ]
-        region = var.region
+      action_sub_type = "STOP_EC2_INSTANCES"
+      instance_ids = [
+        aws_instance.nanda_big_instance.id
+      ]
+      region = var.region
     }
   }
 
@@ -38,12 +38,12 @@ resource "aws_iam_role" "budget_stop_ec2_role" {
   name = "budget_stop_ec2_role"
 
   assume_role_policy = jsonencode({
-    Version   = "2012-10-17",
+    Version = "2012-10-17",
     Statement = [
       {
-        Effect    = "Allow",
+        Effect = "Allow",
         Principal = {
-          Service = ["budgets.amazonaws.com","ec2.amazonaws.com"]
+          Service = ["budgets.amazonaws.com", "ec2.amazonaws.com"]
         },
         Action = "sts:AssumeRole"
       }
@@ -59,8 +59,8 @@ resource "aws_iam_policy" "allow_assume_budget_stop_ec2_role" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect = "Allow"
-        Action = "sts:AssumeRole"
+        Effect   = "Allow"
+        Action   = "sts:AssumeRole"
         Resource = aws_iam_role.budget_stop_ec2_role.arn
       },
     ]
@@ -92,8 +92,8 @@ resource "aws_iam_policy" "ssm_start_automation_execution" {
     Version = "2012-10-17",
     Statement = [
       {
-        Effect = "Allow",
-        Action = "ssm:StartAutomationExecution",
+        Effect   = "Allow",
+        Action   = "ssm:StartAutomationExecution",
         Resource = "arn:aws:ssm:ap-southeast-1::automation-definition/AWS-StopEC2Instance:*"
       }
     ]
@@ -102,8 +102,8 @@ resource "aws_iam_policy" "ssm_start_automation_execution" {
 
 
 resource "aws_iam_policy" "ec2_stop_instances_policy" {
-  name        = "ec2_stop_instances_policy"
-  path        = "/"
+  name = "ec2_stop_instances_policy"
+  path = "/"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -117,8 +117,8 @@ resource "aws_iam_policy" "ec2_stop_instances_policy" {
   })
 }
 resource "aws_iam_policy" "send_budget_notification_policy" {
-  name        = "send_budget_notification_policy"
-  path        = "/"
+  name = "send_budget_notification_policy"
+  path = "/"
 
   policy = jsonencode({
     Version = "2012-10-17"
