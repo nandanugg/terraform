@@ -20,9 +20,9 @@ variable "create_server" {
 
 }
 
-output "ec2_nanda_big_instance_public_ip" {
-  value       = join("", aws_instance.nanda_big_instance[*].public_ip)
-  depends_on  = [aws_instance.nanda_big_instance]
+output "ec2_nanda_instance_public_ip" {
+  value       = join("", aws_instance.nanda_instance[*].public_ip)
+  depends_on  = [aws_instance.nanda_instance]
   sensitive   = true
   description = "nanda_instance public ip"
 }

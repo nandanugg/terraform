@@ -1,14 +1,14 @@
-resource "aws_budgets_budget" "five_dollar_spend_limit" {
-  name         = "five_dollar_spend_limit"
+resource "aws_budgets_budget" "spend_limit" {
+  name         = "spend_limit"
   budget_type  = "COST"
-  limit_amount = "10"
+  limit_amount = "30"
   limit_unit   = "USD"
   time_unit    = "MONTHLY"
 }
 
-resource "aws_budgets_budget_action" "five_dollar_spend_limit" {
+resource "aws_budgets_budget_action" "spend_limit" {
   count              = var.create_server ? 1 : 0
-  budget_name        = aws_budgets_budget.five_dollar_spend_limit.name
+  budget_name        = aws_budgets_budget.spend_limit.name
   action_type        = "RUN_SSM_DOCUMENTS"
   approval_model     = "AUTOMATIC"
   notification_type  = "ACTUAL"
@@ -22,7 +22,7 @@ resource "aws_budgets_budget_action" "five_dollar_spend_limit" {
     ssm_action_definition {
       action_sub_type = "STOP_EC2_INSTANCES"
       instance_ids = [
-        # aws_instance.nanda_big_instance[0].id
+        aws_instance.nanda_instance[0].id
       ]
       region = var.region
     }
