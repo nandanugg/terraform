@@ -70,8 +70,6 @@ module "s3-user" {
   policy_arns = [
     module.s3-user-policy.arn
   ]
-
-
 }
 
 module "s3-user-policy" {
@@ -122,13 +120,16 @@ resource "aws_instance" "nanda_big_instance" {
 #          ╭──────────────────────────────────────────────────────────╮
 #          │                      OBJECT STORAGE                      │
 #          ╰──────────────────────────────────────────────────────────╯
+# https://registry.terraform.io/modules/terraform-aws-modules/s3-bucket/aws/latest
 module "s3-bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
   version = "3.15.1"
 
   bucket            = "sprint-bucket-public-read"
-  block_public_acls = false
-  # block_public_policy = false
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
   acl = "public-read"
 
   control_object_ownership = true
@@ -141,8 +142,6 @@ module "s3-bucket" {
       expiration = {
         days = 1
       }
-
     }
   ]
-
 }
