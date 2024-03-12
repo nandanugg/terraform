@@ -14,7 +14,7 @@ resource "aws_budgets_budget_action" "spend_limit" {
   execution_role_arn = aws_iam_role.budget_stop_ec2_role.arn
   action_threshold {
     action_threshold_type  = "ABSOLUTE_VALUE"
-    action_threshold_value = 10
+    action_threshold_value = 30
   }
 
   definition {
