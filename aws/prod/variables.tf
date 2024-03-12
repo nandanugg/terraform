@@ -7,17 +7,10 @@ data "aws_key_pair" "nanda" {
   include_public_key = true
 }
 
-
 variable "region" {
   type        = string
   default     = "ap-southeast-1"
   description = "default region"
-}
-
-variable "create_server" {
-  type    = bool
-  default = false
-
 }
 
 output "ec2_nanda_instance_public_ip" {

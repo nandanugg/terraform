@@ -7,7 +7,6 @@ resource "aws_budgets_budget" "spend_limit" {
 }
 
 resource "aws_budgets_budget_action" "spend_limit" {
-  count              = var.create_server ? 1 : 0
   budget_name        = aws_budgets_budget.spend_limit.name
   action_type        = "RUN_SSM_DOCUMENTS"
   approval_model     = "AUTOMATIC"
@@ -22,7 +21,7 @@ resource "aws_budgets_budget_action" "spend_limit" {
     ssm_action_definition {
       action_sub_type = "STOP_EC2_INSTANCES"
       instance_ids = [
-        aws_instance.nanda_instance[0].id
+        aws_instance.nanda_instance.id
       ]
       region = var.region
     }

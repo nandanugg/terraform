@@ -44,7 +44,6 @@ module "app-ec2-sg" {
 }
 
 resource "aws_instance" "nanda_instance" {
-  count                       = var.create_server ? 1 : 0
   ami                         = "ami-034dd93fb26e1a731"
   instance_type               = "t2.nano"
   subnet_id                   = module.default-vpc.default_security_group_id
