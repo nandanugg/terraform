@@ -25,21 +25,14 @@ module "app-ec2-sg" {
       protocol    = "udp"
       description = "Inbound Wireshark UDP"
       cidr_blocks = "0.0.0.0/0"
+    },
+    {
+      from_port   =  8000
+      to_port     = 8000
+      protocol    = "tcp"
+      description = "Inbound ProjectSprint TCP"
+      cidr_blocks = "0.0.0.0/0"
     }
-    # {
-    #   from_port   = 21
-    #   to_port     = 21
-    #   protocol    = "tcp"
-    #   description = "Inbound FTP TCP"
-    #   cidr_blocks = ["0.0.0.0/0"]
-    # },
-    # {
-    #   from_port   = 21
-    #   to_port     = 21
-    #   protocol    = "udp"
-    #   description = "Inbound FTP UDP"
-    #   cidr_blocks = ["0.0.0.0/0"]
-    # },
   ]
 }
 
@@ -57,3 +50,17 @@ resource "aws_instance" "nanda_instance" {
     Name = "nanda_instance"
   }
 }
+# resource "aws_instance" "project_sprint_instance" {
+#   ami                         = "ami-034dd93fb26e1a731"
+#   instance_type               = "t2.medium"
+#   subnet_id                   = module.default-vpc.default_security_group_id
+#   key_name                    = data.aws_key_pair.project_sprint.key_name
+#   associate_public_ip_address = true
+#   vpc_security_group_ids = [
+#     module.app-ec2-sg.security_group_id
+#   ]
+
+#   tags = {
+#     Name = "project_sprint_instance"
+#   }
+# }
