@@ -25,5 +25,4 @@ module "dynamodb-tf-state-lock" {
       type = "S"
     }
   ]
-
 }
