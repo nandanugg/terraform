@@ -25,7 +25,7 @@ module "projectsprint-db-sg" {
 # https://registry.terraform.io/modules/terraform-aws-modules/rds/aws/latest
 # https://ap-southeast-1.console.aws.amazon.com/secretsmanager/listsecrets?region=ap-southeast-1
 module "projectsprint-db" {
-  count = var.start_projectsprint ? 1 : 0
+  count = var.projectsprint_start ? 1 : 0
   source = "terraform-aws-modules/rds/aws"
   version = "6.5.2"
 
@@ -75,7 +75,7 @@ module "projectsprint-db" {
 }
 
 module "projectsprint-db-2" {
-  count = var.start_projectsprint ? 1 : 0
+  count = var.projectsprint_start ? 1 : 0
   source = "terraform-aws-modules/rds/aws"
   version = "6.5.2"
 
@@ -93,7 +93,7 @@ module "projectsprint-db-2" {
 
   iam_database_authentication_enabled = false
   manage_master_user_password = false
-  password = "peph5wiePhu9shahteerohr2WedaeZee9"
+  password = var.projectsprint_db_password
 
   vpc_security_group_ids = [module.projectsprint-db-sg.security_group_id]
 

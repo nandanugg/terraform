@@ -66,7 +66,7 @@ resource "aws_instance" "nanda_instance" {
 }
 
 resource "aws_instance" "project_sprint_k6_instance" {
-  count = var.start_projectsprint ? 1 : 0
+  count = var.projectsprint_start ? 1 : 0
   ami                         = "ami-034dd93fb26e1a731"
   instance_type               = "t3.small"
   subnet_id                   = data.aws_subnet.b.id
@@ -82,7 +82,7 @@ resource "aws_instance" "project_sprint_k6_instance" {
 }
 
 resource "aws_instance" "project_sprint_instance" {
-  count = var.start_projectsprint ? 1 : 0
+  count = var.projectsprint_start ? 1 : 0
   ami                         = "ami-034dd93fb26e1a731"
   instance_type               = "t3.medium"
   subnet_id                   = data.aws_subnet.b.id 
@@ -98,7 +98,7 @@ resource "aws_instance" "project_sprint_instance" {
 }
 
 resource "aws_instance" "project_sprint_instance_2" {
-  count = var.start_projectsprint ? 1 : 0
+  count = var.projectsprint_start ? 1 : 0
   ami                         = "ami-034dd93fb26e1a731"
   instance_type               = "t3.medium"
   subnet_id                   = data.aws_subnet.b.id 

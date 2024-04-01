@@ -1,6 +1,6 @@
 
 module "s3-user" {
-  count = var.start_projectsprint ? 1 : 0
+  count = var.projectsprint_start ? 1 : 0
   source  = "terraform-aws-modules/iam/aws//modules/iam-user"
   version = "5.33.0"
 
@@ -40,7 +40,7 @@ module "s3-user-policy" {
 
 # https://registry.terraform.io/modules/terraform-aws-modules/s3-bucket/aws/latest
 module "s3-bucket" {
-  count = var.start_projectsprint ? 1 : 0
+  count = var.projectsprint_start ? 1 : 0
   source  = "terraform-aws-modules/s3-bucket/aws"
   version = "3.15.1"
 
