@@ -7,9 +7,9 @@ data "aws_key_pair" "nanda" {
   include_public_key = true
 }
 
-data "aws_key_pair" "project_sprint" {
-  key_name           = "Project Sprint Key"
-  include_public_key = true
+resource "aws_key_pair" "project_sprint" {
+  key_name   = "projectsprint"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDxTTLsIK3GJclbBzi7i/fh7LNQUzVF9paSarwvo69JE+A0r5cnUw/zagW0GHeMzrIdPvURrDMPgy6GFqadJnhgK9QROTUSschNK5WjVwUSzJ9DhVUClUqySjvzqwb7X4kl/OrEK+5PZTSLQmjvvmpbGGLUJFRxjFaZJgTXwx8bZGp/P2DLFGs4lERk6yatN4YncGSjDzmukKMhl6WNiUhBPGT3ouwvbF8K3g5wtizBvdptbVlbPgCHNXigwaH1k5/qb4riUL/m1cORNjcen6EXH7zxoBmGMvfzMJjtSB9UdGgr4jwrsVZm0noUNg95Oc5L+HLqC/Y/zgstfwBwfiy/xH26yW9NuwPnJn+pZF1QXAubhRBADR6biCdTvU3xpTNUQGwFGQSx2MJNA/eVrrSExHQgL89cMtA3Ht9w9GPUR5YLxyg2dZRqUOUjh3j9b7KQDAeTJj6NkKyDPCEhaIo63O1KpD07t9za7RA9i3py9bCKeXN8C4nr7YZpb036gJ3HM0dlyeHz0j45yfjq7s+q3590owqRKZTSl0DDG7d+PYR+e4eQ2H+M1CBa15EcCo58PzgIp0lWrKjtkOCQPTpR/1R+uXT8EOHQatTopW0bN/OqL1HwegZw98q2jjumvgtNGieFPk+d2rAKxY7ltLzYX8VY8cMK1q0yUiDUQXIkgw=="
 }
 
 variable subnet_1a {}
@@ -34,39 +34,43 @@ output "ec2_nanda_instance_public_ip" {
   description = "nanda_instance public ip"
 }
 
-output "ec2_project_sprint_k6_instance_public_ip" {
-  value       = join("", aws_instance.project_sprint_k6_instance[*].public_ip)
+output "ec2_project_sprint_k6_instance_ips" {
+  value       = {
+    "public_ip": join("", aws_instance.project_sprint_k6_instance[*].public_ip)
+  }
   depends_on  = [aws_instance.project_sprint_k6_instance]
   sensitive   = true
-  description = "project_sprint_k6_instance public ip"
+  description = "project_sprint_k6_instance IP addresses"
 }
 
+output "ec2_project_sprint_instance_2_ips" {
+  value = {
+    "private_ip" = join("", aws_instance.project_sprint_instance_2[*].private_ip)
+    "public_ip"  = join("", aws_instance.project_sprint_instance_2[*].public_ip)
+  }
+  depends_on  = [aws_instance.project_sprint_instance_2]
+  sensitive   = true
+  description = "project_sprint_instance_2 IP addresses"
+}
 
-output "ec2_project_sprint_instance_private_ip" {
-  value       = join("", aws_instance.project_sprint_instance[*].private_ip)
+output "ec2_project_sprint_instance_ips" {
+  value = {
+    "private_ip" = join("", aws_instance.project_sprint_instance[*].private_ip)
+    "public_ip"  = join("", aws_instance.project_sprint_instance[*].public_ip)
+  }
   depends_on  = [aws_instance.project_sprint_instance]
   sensitive   = true
-  description = "project_sprint_instance private ip"
-}
-output "ec2_project_sprint_instance_public_ip" {
-  value       = join("", aws_instance.project_sprint_instance[*].public_ip)
-  depends_on  = [aws_instance.project_sprint_instance]
-  sensitive   = true
-  description = "project_sprint_instance public ip"
+  description = "project_sprint_instance IP addresses"
 }
 
-output "ec2_project_sprint_db_instance_username" {
-  value       = length(module.projectsprint-db) > 0 ? one(module.projectsprint-db).db_instance_usernamed : null
-  sensitive   = true
-  description = "project_sprint_db_instance_username"
-}
-output "ec2_project_sprint_db_instance_ca_cert_identifier" {
-  value       = length(module.projectsprint-db) > 0 ? one(module.projectsprint-db).db_instance_ca_cert_identifier : null
-  sensitive   = true
-  description = "project_sprint_db_instance_ca_cert_identifier"
-}
 output "ec2_project_sprint_db_address" {
-  value       = length(module.projectsprint-db) > 0 ? one(module.projectsprint-db).db_instance_address : null
+  value       = join("", module.projectsprint-db[*].db_instance_address)
+  sensitive   = true
+  description = "project_sprint_db_address"
+}
+
+output "ec2_project_sprint_db_2_address" {
+  value       = join("", module.projectsprint-db-2[*].db_instance_address)
   sensitive   = true
   description = "project_sprint_db_address"
 }
@@ -74,8 +78,8 @@ output "ec2_project_sprint_db_address" {
 output "s3_user_creds" {
   sensitive = true
   value = {
-    "id"     = module.s3-user.iam_access_key_id
-    "secret" = module.s3-user.iam_access_key_secret
-    "status" = module.s3-user.iam_access_key_status
+    "id"     = join("", module.s3-user[*].iam_access_key_id)
+    "secret" = join("", module.s3-user[*].iam_access_key_secret)
+    "status" = join("", module.s3-user[*].iam_access_key_status)
   }
 }

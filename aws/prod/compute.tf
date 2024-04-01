@@ -27,10 +27,24 @@ module "app-ec2-sg" {
       cidr_blocks = "0.0.0.0/0"
     },
     {
-      from_port   =  8000
-      to_port     = 8000
+      from_port   =  8080
+      to_port     = 8080
       protocol    = "tcp"
       description = "Inbound ProjectSprint TCP"
+      cidr_blocks = "0.0.0.0/0"
+    },
+    {
+      from_port   =  3000
+      to_port     = 3000
+      protocol    = "tcp"
+      description = "Inbound ProjectSprint Grafana"
+      cidr_blocks = "0.0.0.0/0"
+    },
+    {
+      from_port   =  9090
+      to_port     = 9090
+      protocol    = "tcp"
+      description = "Inbound ProjectSprint Prometheus"
       cidr_blocks = "0.0.0.0/0"
     }
   ]
@@ -52,11 +66,12 @@ resource "aws_instance" "nanda_instance" {
 }
 
 resource "aws_instance" "project_sprint_k6_instance" {
+  count = var.start_projectsprint ? 1 : 0
   ami                         = "ami-034dd93fb26e1a731"
-  instance_type               = "t2.micro"
+  instance_type               = "t3.small"
   subnet_id                   = data.aws_subnet.b.id
-  key_name                    = data.aws_key_pair.project_sprint.key_name
-  associate_public_ip_address = var.start_projectsprint 
+  key_name                    = aws_key_pair.project_sprint.key_name
+  associate_public_ip_address = true 
   vpc_security_group_ids = [
     module.app-ec2-sg.security_group_id
   ]
@@ -67,11 +82,12 @@ resource "aws_instance" "project_sprint_k6_instance" {
 }
 
 resource "aws_instance" "project_sprint_instance" {
+  count = var.start_projectsprint ? 1 : 0
   ami                         = "ami-034dd93fb26e1a731"
-  instance_type               = "t2.medium"
+  instance_type               = "t3.medium"
   subnet_id                   = data.aws_subnet.b.id 
-  key_name                    = data.aws_key_pair.project_sprint.key_name
-  associate_public_ip_address = var.start_projectsprint 
+  key_name                    = aws_key_pair.project_sprint.key_name
+  associate_public_ip_address = true 
   vpc_security_group_ids = [
     module.app-ec2-sg.security_group_id
   ]
@@ -81,11 +97,18 @@ resource "aws_instance" "project_sprint_instance" {
   }
 }
 
-resource "aws_ec2_instance_state" "project_sprint_k6_instance" {
-  instance_id = aws_instance.project_sprint_k6_instance.id
-  state       = var.start_projectsprint ? "running" :"stopped"
-}
-resource "aws_ec2_instance_state" "project_sprint_instance" {
-  instance_id = aws_instance.project_sprint_instance.id
-  state       = var.start_projectsprint ? "running" :"stopped"
+resource "aws_instance" "project_sprint_instance_2" {
+  count = var.start_projectsprint ? 1 : 0
+  ami                         = "ami-034dd93fb26e1a731"
+  instance_type               = "t3.medium"
+  subnet_id                   = data.aws_subnet.b.id 
+  key_name                    = aws_key_pair.project_sprint.key_name
+  associate_public_ip_address = true 
+  vpc_security_group_ids = [
+    module.app-ec2-sg.security_group_id
+  ]
+
+  tags = {
+    Name = "project_sprint_instance_2"
+  }
 }
