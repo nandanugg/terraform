@@ -43,7 +43,7 @@ module "projectsprint-db" {
 
   iam_database_authentication_enabled = false
   manage_master_user_password = false
-  password = "peph5wiePhu9shahteerohr2WedaeZee9"
+  password = var.projectsprint_db_password
 
   vpc_security_group_ids = [module.projectsprint-db-sg.security_group_id]
 
@@ -75,7 +75,8 @@ module "projectsprint-db" {
 }
 
 module "projectsprint-db-2" {
-  count = var.projectsprint_start ? 1 : 0
+  # count = var.projectsprint_start ? 1 : 0
+  count = false ? 1 : 0
   source = "terraform-aws-modules/rds/aws"
   version = "6.5.2"
 

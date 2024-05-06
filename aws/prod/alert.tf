@@ -1,10 +1,10 @@
-# resource "aws_budgets_budget" "spend_limit" {
-#   name         = "spend_limit"
-#   budget_type  = "COST"
-#   limit_amount = "30"
-#   limit_unit   = "USD"
-#   time_unit    = "MONTHLY"
-# }
+resource "aws_budgets_budget" "spend_limit" {
+  name         = "spend_limit"
+  budget_type  = "COST"
+  limit_amount = "30"
+  limit_unit   = "USD"
+  time_unit    = "MONTHLY"
+}
 
 # resource "aws_budgets_budget_action" "spend_limit" {
 #   budget_name        = aws_budgets_budget.spend_limit.name
@@ -18,13 +18,13 @@
 #   }
 
 #   definition {
-#     ssm_action_definition {
-#       action_sub_type = "STOP_EC2_INSTANCES"
-#       instance_ids = [
-#         # aws_instance.nanda_instance.id
-#       ]
-#       region = var.region
-#     }
+#     # ssm_action_definition {
+#     #   action_sub_type = "STOP_EC2_INSTANCES"
+#     #   instance_ids = [
+#     #     # aws_instance.nanda_instance.id
+#     #   ]
+#     #   region = var.region
+#     # }
 #   }
 
 #   subscriber {
