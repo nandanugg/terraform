@@ -117,7 +117,6 @@ resource "aws_instance" "project_sprint_instance" {
     Name = "project_sprint_instance"
   }
 }
-
 resource "aws_instance" "project_sprint_instance_2" {
   count                       = var.projectsprint_start ? 1 : 0
   ami                         = "ami-034dd93fb26e1a731"
