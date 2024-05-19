@@ -44,11 +44,11 @@ resource "aws_instance" "nanda_instance" {
   }
 }
 
-module "projectsprint-8080-3000-9090-sg" {
+module "projectsprint_8080_sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "5.1.1"
 
-  name   = "projectsprint-8080-3000-9090-sg"
+  name   = "projectsprint_8080_sg"
   vpc_id = module.default-vpc.default_vpc_id
 
   ingress_rules = [
@@ -69,20 +69,6 @@ module "projectsprint-8080-3000-9090-sg" {
       description = "Inbound ProjectSprint TCP"
       cidr_blocks = "0.0.0.0/0"
     },
-    # {
-    #   from_port   =  3000
-    #   to_port     = 3000
-    #   protocol    = "tcp"
-    #   description = "Inbound ProjectSprint Grafana"
-    #   cidr_blocks = "0.0.0.0/0"
-    # },
-    # {
-    #   from_port   =  9090
-    #   to_port     = 9090
-    #   protocol    = "tcp"
-    #   description = "Inbound ProjectSprint Prometheus"
-    #   cidr_blocks = "0.0.0.0/0"
-    # }
   ]
 }
 
@@ -94,7 +80,7 @@ resource "aws_instance" "project_sprint_k6_instance" {
   key_name                    = aws_key_pair.project_sprint[0].key_name
   associate_public_ip_address = true
   vpc_security_group_ids = [
-    module.projectsprint-8080-3000-9090-sg.security_group_id
+    module.projectsprint_8080_sg.security_group_id
   ]
 
   tags = {
@@ -110,25 +96,10 @@ resource "aws_instance" "project_sprint_instance" {
   key_name                    = aws_key_pair.project_sprint[0].key_name
   associate_public_ip_address = true
   vpc_security_group_ids = [
-    module.projectsprint-8080-3000-9090-sg.security_group_id
+    module.projectsprint_8080_sg.security_group_id
   ]
 
   tags = {
     Name = "project_sprint_instance"
-  }
-}
-resource "aws_instance" "project_sprint_instance_2" {
-  count                       = var.projectsprint_start ? 1 : 0
-  ami                         = "ami-034dd93fb26e1a731"
-  instance_type               = "t3a.medium"
-  subnet_id                   = data.aws_subnet.b.id
-  key_name                    = aws_key_pair.project_sprint[0].key_name
-  associate_public_ip_address = true
-  vpc_security_group_ids = [
-    module.projectsprint-8080-3000-9090-sg.security_group_id
-  ]
-
-  tags = {
-    Name = "project_sprint_instance_2"
   }
 }

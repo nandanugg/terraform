@@ -94,7 +94,7 @@ resource "aws_iam_policy" "ssm_start_automation_execution" {
       {
         Effect   = "Allow",
         Action   = "ssm:StartAutomationExecution",
-        Resource = "arn:aws:ssm:ap-southeast-1::automation-definition/AWS-StopEC2Instance:*"
+        Resource = "arn:aws:ssm:${var.region}::automation-definition/AWS-StopEC2Instance:*"
       }
     ]
   })
