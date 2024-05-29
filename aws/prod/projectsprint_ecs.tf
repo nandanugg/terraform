@@ -46,6 +46,7 @@ resource "aws_ecs_service" "projectsprint_ecs_service" {
     aws_ecs_cluster.projectsprint_cluster
   ]
 }
+
 resource "aws_ecs_task_definition" "projectsprint_ecs_task_definition" {
   for_each = {
     for team, config in var.projectsprint_teams :
@@ -110,6 +111,16 @@ resource "aws_ecs_task_definition" "projectsprint_ecs_task_definition" {
   ]
 }
 
+resource "aws_ecs_task_set" "projectsprint_task" {
+  for_each = {
+    for team, config in var.projectsprint_teams :
+    team => config if config.start_ecs
+  }
+  service         = aws_ecs_service.projectsprint_ecs_service[each.key].id
+  cluster         = aws_ecs_cluster.projectsprint_cluster[each.key].id
+  task_definition = aws_ecs_task_definition.projectsprint_ecs_task_definition[each.key].arn
+}
+
 resource "aws_cloudwatch_log_group" "projectsprint_service" {
   for_each = {
     for team, config in var.projectsprint_teams :
@@ -124,11 +135,11 @@ resource "random_string" "jwt_secret" {
     for team, config in var.projectsprint_teams :
     team => config if config.start_ecs
   }
-  length  = 32    # Define the length of the string
-  special = false # Include special characters
-  upper   = true  # Include uppercase letters
-  lower   = true  # Include lowercase letters
-  numeric = true  # Include numbers
+  length  = 32
+  special = false
+  upper   = true
+  lower   = true
+  numeric = true
 }
 
 resource "random_string" "db_pass" {
@@ -136,10 +147,10 @@ resource "random_string" "db_pass" {
     for team, config in var.projectsprint_teams :
     team => config if config.start_ecs
   }
-  length  = 32    # Define the length of the string
-  special = false # Include special characters
-  upper   = true  # Include uppercase letters
-  lower   = true  # Include lowercase letters
-  numeric = true  # Include numbers
+  length  = 32
+  special = false
+  upper   = true
+  lower   = true
+  numeric = true
 }
 
