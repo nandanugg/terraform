@@ -64,7 +64,7 @@ done
 echo "Removing out-of-spec services..."
 for service_arn in ${(k)service_to_remove}; do
     echo "Removing service: $service_to_remove[$service_arn]"
-    aws ecs delete-service --cluster $cluster_name --service $service_arn --force 2>/dev/null
+    aws ecs delete-service --cluster $cluster_name --service $service_arn --force &>/dev/null
 done
 
 echo "Cleanup complete."

@@ -19,10 +19,13 @@ for task_def in $task_defs; do
     os=$(echo "$task_details" | jq -r '.taskDefinition.runtimePlatform.operatingSystem // empty')
     cpu=$(echo "$task_details" | jq -r '.taskDefinition.cpu // empty')
     memory=$(echo "$task_details" | jq -r '.taskDefinition.memory // empty')
+    cpu_architecture=$(echo "$task_details" | jq -r '.taskDefinition.runtimePlatform.cpuArchitecture // empty')
+    os_family=$(echo "$task_details" | jq -r '.taskDefinition.runtimePlatform.operatingSystemFamily // empty')
 
-    if [[ $os != "LINUX" ]]; then
-        out_of_spec_reasons+=("Task Definition $task_def has an unusual OS: $os")
+    if [[ $cpu_architecture != "X86_64" || $os_family != "LINUX" ]]; then
+        out_of_spec_reasons+=("Task Definition $task_def has unsupported platform settings: OS $os_family / Arch $cpu_architecture")
     fi
+
     if [[ $cpu -gt 256 ]]; then
         out_of_spec_reasons+=("Task Definition $task_def has high CPU allocation: $cpu units")
     fi
@@ -44,7 +47,7 @@ for task_def in $task_defs; do
             if [[ "$service_task_def" == "$task_def" ]]; then
                 echo "Service $service uses this out of spec task definition. Stopping and deregistering service..."
                 aws ecs update-service --cluster $cluster_name --service $service --desired-count 0
-                aws ecs delete-service --cluster $cluster_name --service $service --force 2>/dev/null
+                aws ecs delete-service --cluster $cluster_name --service $service --force &>/dev/null
             fi
         done
 
@@ -53,12 +56,12 @@ for task_def in $task_defs; do
             log_group_name=$(echo "$task_details" | jq -r '.taskDefinition.containerDefinitions[].logConfiguration.options.group // empty')
             if [[ -n $log_group_name ]]; then
                 echo "Deleting associated log group $log_group_name"
-                aws logs delete-log-group --log-group-name $log_group_name 2>/dev/null
+                aws logs delete-log-group --log-group-name $log_group_name &>/dev/null
             fi
         fi
 
         # Deregister the task definition
         echo "Deregistering task definition $task_def"
-        aws ecs deregister-task-definition --task-definition $task_def 2>/dev/null
+        aws ecs deregister-task-definition --task-definition $task_def &>/dev/null
     fi
 done
