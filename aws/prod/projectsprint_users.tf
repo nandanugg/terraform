@@ -11,7 +11,28 @@ variable "projectsprint_teams" {
   }))
   default = {
     // name should satisfy regular expression '(?:[a-z0-9]+(?:[._-][a-z0-9]+)*/)*[a-z0-9]+(?:[._-][a-z0-9]+)*'
-    "testuser2" = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "thorumr"         = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "chalk93"         = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "dionedo"         = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "raf_encoding"    = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "agusheryanto182" = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "syarif_04"       = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "recholup"        = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "m_ulil_azmi"     = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "thesagab"        = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "ilhamsurya_m"    = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "jessenicholast"  = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "vinsskyy"        = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "ydesetiawan94"   = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "inmydream"       = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "j03hanafi"       = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "iwasbornalone"   = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "ilhamsurya_m"    = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "shamirhusein"    = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "enigmanations"   = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "danimron"        = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "ubigantung"      = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "dwibi"           = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
   }
 }
 
