@@ -5,12 +5,13 @@ resource "random_string" "password" {
 
 variable "projectsprint_teams" {
   type = map(object({
-    start_ecs = bool
-    turbo_ecs = bool
+    start_ecs       = bool
+    turbo_ecs       = bool
+    independent_ecs = bool
   }))
   default = {
     // name should satisfy regular expression '(?:[a-z0-9]+(?:[._-][a-z0-9]+)*/)*[a-z0-9]+(?:[._-][a-z0-9]+)*'
-    "testuser2" = { start_ecs = true, turbo_ecs = false }
+    "testuser2" = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
   }
 }
 

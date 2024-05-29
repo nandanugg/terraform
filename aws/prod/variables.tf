@@ -25,7 +25,7 @@ variable "projectsprint_start_load_test" {
   type    = bool
   default = false
 }
-variable "projectsprint_start_ecs" {
+variable "projectsprint_start_ecs_cluster" {
   type    = bool
   default = false
 }
@@ -34,6 +34,10 @@ variable "projectsprint_db_password" {
   default = ""
 }
 
+variable "rds_ca_cert_path_ap_southeast_1" {
+  type    = string
+  default = ""
+}
 variable "region" {
   type        = string
   default     = "ap-southeast-1"

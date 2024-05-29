@@ -1,12 +1,12 @@
-module "projectspint_ecs_policy" {
-  for_each = { 
-    for team, config in var.projectsprint_teams : 
-    team => config if config.start_ecs 
+module "projectspint_ecs_user_policy" {
+  for_each = {
+    for team, config in var.projectsprint_teams :
+    team => config if config.start_ecs
   }
   source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
   version = "5.37.1"
 
-  name = "projectspint-ecs-policy-${each.key}"
+  name = "projectspint-ecs-user-policy-${each.key}"
   path = "/"
   policy = jsonencode({
     Version = "2012-10-17"
@@ -39,7 +39,7 @@ module "projectspint_ecs_policy" {
           "ecs:DescribeClusters",
           "ecs:ListContainerInstances"
         ]
-        Resource = "${aws_ecs_cluster.projectsprint_cluster[0].arn}*"
+        Resource = "${aws_ecs_cluster.projectsprint[0].arn}*"
       },
       {
         Effect = "Allow"
@@ -53,7 +53,7 @@ module "projectspint_ecs_policy" {
           "logs:GetQueryResults",
         ]
         Resource = [
-          "${aws_cloudwatch_log_group.projectsprint_service[each.key].arn}*",
+          "${aws_cloudwatch_log_group.projectsprint[each.key].arn}*",
         ]
       },
       {
@@ -62,19 +62,109 @@ module "projectspint_ecs_policy" {
           "ecs:UpdateService",
         ]
         Resource = [
-          "${aws_ecs_service.projectsprint_ecs_service[each.key].id}*",
+          "${aws_ecs_service.projectsprint[each.key].id}*",
         ]
       },
     ]
   })
 }
 
-resource "aws_iam_user_policy_attachment" "projectsprint_ecs_policy_attachment" {
-  for_each = { 
-    for team, config in var.projectsprint_teams : 
-    team => config if config.start_ecs 
+resource "aws_iam_user_policy_attachment" "projectsprint_ecs_user" {
+  for_each = {
+    for team, config in var.projectsprint_teams :
+    team => config if config.start_ecs
   }
 
-  user      = module.projectsprint_iam_account[each.key].iam_user_name
-  policy_arn = module.projectspint_ecs_policy[each.key].arn
+  user       = module.projectsprint_iam_account[each.key].iam_user_name
+  policy_arn = module.projectspint_ecs_user_policy[each.key].arn
+}
+
+
+module "projectspint_ecs_independent_user_policy" {
+  for_each = {
+    for team, config in var.projectsprint_teams :
+    team => config if config.independent_ecs
+  }
+  source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
+  version = "5.37.1"
+
+  name = "projectspint-ecs-user-policy-${each.key}"
+  path = "/"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ecs:ListClusters",
+
+          "ecs:DescribeTaskDefinition",
+          "ecs:ListTasks",
+          "ecs:DescribeTasks",
+          "ecs:ListTaskDefinitions",
+          "ecs:ListTaskDefinitionFamilies",
+          "ecs:DeregisterTaskDefinition",
+          "ecs:ListAccountSettings",
+          "ecs:RegisterTaskDefinition",
+
+          "ecs:DescribeServices",
+          "ecs:ListServices",
+          "ecs:UpdateService",
+          "ecs:CreateService",
+          "ecs:DeleteService",
+
+          "cloudwatch:GetMetricData",
+
+          "cloudformation:CreateStack",
+
+          "application-autoscaling:DescribeScalingPolicies",
+          "application-autoscaling:DescribeScalableTargets",
+
+          "servicediscovery:GetService",
+          "servicediscovery:GetNamespace",
+          "servicediscovery:ListNamespaces",
+
+          "ec2:DescribeNetworkInterfaces",
+          "ec2:DescribeVpcs",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeRouteTables",
+          "ec2:DescribeSecurityGroups",
+
+
+          "ecr:CreateRepository",
+          "ecr:DeleteRepository",
+
+          "iam:ListRoles",
+          "iam:PassRole",
+
+          "logs:FilterLogEvents",
+          "logs:StartLiveTail",
+          "logs:DescribeLogStreams",
+          "logs:DescribeLogGroups",
+          "logs:GetLogEvents",
+          "logs:GetLogRecord",
+          "logs:GetQueryResults",
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ecs:DescribeClusters",
+          "ecs:ListContainerInstances"
+        ]
+        Resource = "${aws_ecs_cluster.projectsprint[0].arn}*"
+      },
+    ]
+  })
+}
+
+resource "aws_iam_user_policy_attachment" "projectsprint_ecs_independent_user" {
+  for_each = {
+    for team, config in var.projectsprint_teams :
+    team => config if config.independent_ecs
+  }
+
+  user       = module.projectsprint_iam_account[each.key].iam_user_name
+  policy_arn = module.projectspint_ecs_independent_user_policy[each.key].arn
 }

@@ -48,7 +48,7 @@ module "projectsprint_50051_sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "5.1.1"
 
-  name   = "projectsprint_8080_sg"
+  name   = "projectsprint-50051-sg"
   vpc_id = module.default-vpc.default_vpc_id
 
   egress_rules       = ["all-all"]
@@ -70,7 +70,7 @@ module "projectsprint_ssh_sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "5.1.1"
 
-  name   = "projectsprint_8080_sg"
+  name   = "projectsprint-ssh-sg"
   vpc_id = module.default-vpc.default_vpc_id
 
   egress_rules       = ["all-all"]
@@ -85,7 +85,7 @@ module "projectsprint_8080_sg" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "5.1.1"
 
-  name   = "projectsprint_8080_sg"
+  name   = "projectsprint-8080-sg"
   vpc_id = module.default-vpc.default_vpc_id
 
   ingress_rules = [

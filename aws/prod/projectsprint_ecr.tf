@@ -1,9 +1,12 @@
 module "projectspint_ecr_policy" {
-  for_each = var.projectsprint_teams
+  for_each = {
+    for team, config in var.projectsprint_teams :
+    team => config if config.start_ecs
+  }
   source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
   version = "5.37.1"
 
-  name = "projectspint-ecr-policy-${each.key}"
+  name = "projectspint-ecr-${each.key}"
   path = "/"
   policy = jsonencode({
     Version = "2012-10-17"
@@ -31,7 +34,7 @@ module "projectspint_ecr_policy" {
         Action = [
           "ecr:DeleteRepository",
           "ecr:DeleteRepositoryPolicy",
-          "ecr:PutImageTagMutability", # Deny edit action
+          "ecr:PutImageTagMutability",         # Deny edit action
           "ecr:PutImageScanningConfiguration", # Allow scan on push
         ]
         Resource = "*"
@@ -40,23 +43,28 @@ module "projectspint_ecr_policy" {
   })
 }
 
+resource "aws_iam_user_policy_attachment" "projectsprint_ecr" {
+  for_each = {
+    for team, config in var.projectsprint_teams :
+    team => config if config.start_ecs
+  }
 
-resource "aws_iam_user_policy_attachment" "projectsprint_ecr_policy_attachment" {
-  for_each = var.projectsprint_teams
-
-  user      = module.projectsprint_iam_account[each.key].iam_user_name
+  user       = module.projectsprint_iam_account[each.key].iam_user_name
   policy_arn = module.projectspint_ecr_policy[each.key].arn
 }
 
 // https://registry.terraform.io/modules/terraform-aws-modules/ecr/aws/latest#outputs
 module "projectsprint_ecr" {
-  for_each = var.projectsprint_teams
-  source = "terraform-aws-modules/ecr/aws"
+  for_each = {
+    for team, config in var.projectsprint_teams :
+    team => config if config.start_ecs
+  }
+  source   = "terraform-aws-modules/ecr/aws"
 
   repository_name = "${each.key}-repository"
   # repository_type = "public"
-  repository_image_tag_mutability = "MUTABLE"
-  repository_force_delete = true
+  repository_image_tag_mutability   = "MUTABLE"
+  repository_force_delete           = true
   repository_read_write_access_arns = [module.projectsprint_iam_account[each.key].iam_user_arn]
   repository_lifecycle_policy = jsonencode({
     rules = [

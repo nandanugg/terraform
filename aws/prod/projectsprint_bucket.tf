@@ -1,5 +1,5 @@
 module "projectsprint_s3_policy" {
-  count = var.projectsprint_start_bucket ? 1 : 0
+  count   = var.projectsprint_start_bucket ? 1 : 0
   source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
   version = "5.37.1"
 
@@ -32,25 +32,25 @@ module "projectsprint_s3_policy" {
   )
 }
 
-resource "aws_iam_group_policy_attachment" "projectsprint_group_policy_attachment" {
-  count = var.projectsprint_start_bucket ? 1 : 0
-  group       = aws_iam_group.projectsprint_developers.name
+resource "aws_iam_group_policy_attachment" "projectsprint_s3" {
+  count      = var.projectsprint_start_bucket ? 1 : 0
+  group      = aws_iam_group.projectsprint_developers.name
   policy_arn = module.projectsprint_s3_policy[0].arn
 }
 
 # https://registry.terraform.io/modules/terraform-aws-modules/s3-bucket/aws/latest
 module "projectsprint_bucket" {
-  count = var.projectsprint_start_bucket ? 1 : 0
+  count   = var.projectsprint_start_bucket ? 1 : 0
   source  = "terraform-aws-modules/s3-bucket/aws"
   version = "3.15.1"
 
-  bucket            = "projectsprint-bucket-public-read"
+  bucket                  = "projectsprint-bucket-public-read"
   block_public_acls       = false
   block_public_policy     = false
   ignore_public_acls      = false
   restrict_public_buckets = false
 
-  acl = "public-read"
+  acl           = "public-read"
   force_destroy = true
 
   control_object_ownership = true

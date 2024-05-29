@@ -17,7 +17,7 @@
 
 
 
-resource "aws_instance" "project_sprint_k6_instance" {
+resource "aws_instance" "projectsprint_k6" {
   count                       = var.projectsprint_start_load_test ? 1 : 0
   ami                         = "ami-003c463c8207b4dfa"
   instance_type               = "t3a.large"
@@ -28,29 +28,29 @@ resource "aws_instance" "project_sprint_k6_instance" {
     module.projectsprint_ssh_sg.security_group_id,
     module.projectsprint_50051_sg.security_group_id,
   ]
-#   provisioner "local-exec" {
-#     when    = destroy
-#     command = <<EOF
-# aws servicediscovery deregister-instance --service-id ${aws_service_discovery_service.projectsprint_k6_service_discovery0[0].id} \
-# --instance-id "${aws_instance.project_sprint_k6_instance[0].id}"
-# EOF
-#   }
+  #   provisioner "local-exec" {
+  #     when    = destroy
+  #     command = <<EOF
+  # aws servicediscovery deregister-instance --service-id ${aws_service_discovery_service.projectsprint_k6_service_discovery0[0].id} \
+  # --instance-id "${aws_instance.projectsprint_k6[0].id}"
+  # EOF
+  #   }
 
   tags = {
-    Name = "project_sprint_k6_instance"
+    Name = "projectsprint-k6"
   }
 }
 
 # resource "null_resource" "register_instance" {
 #   triggers = {
-#     instance_id = aws_instance.project_sprint_k6_instance[0].id
+#     instance_id = aws_instance.projectsprint_k6[0].id
 #   }
 
 #   provisioner "local-exec" {
 #     command = <<EOF
 # aws servicediscovery register-instance --service-id ${aws_service_discovery_service.projectsprint_k6_service_discovery[0].id} \
-# --instance-id "${aws_instance.project_sprint_k6_instance[0].id}" \
-# --attributes "AWS_INSTANCE_IPV4=${aws_instance.project_sprint_k6_instance[0].private_ip}"
+# --instance-id "${aws_instance.projectsprint_k6[0].id}" \
+# --attributes "AWS_INSTANCE_IPV4=${aws_instance.projectsprint_k6[0].private_ip}"
 # EOF
 #   }
 # }
