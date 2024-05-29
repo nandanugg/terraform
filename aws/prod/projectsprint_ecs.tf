@@ -111,16 +111,6 @@ resource "aws_ecs_task_definition" "projectsprint_ecs_task_definition" {
   ]
 }
 
-resource "aws_ecs_task_set" "projectsprint_task" {
-  for_each = {
-    for team, config in var.projectsprint_teams :
-    team => config if config.start_ecs
-  }
-  service         = aws_ecs_service.projectsprint_ecs_service[each.key].id
-  cluster         = aws_ecs_cluster.projectsprint_cluster[each.key].id
-  task_definition = aws_ecs_task_definition.projectsprint_ecs_task_definition[each.key].arn
-}
-
 resource "aws_cloudwatch_log_group" "projectsprint_service" {
   for_each = {
     for team, config in var.projectsprint_teams :
