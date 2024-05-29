@@ -11,21 +11,24 @@ variable "projectsprint_vm_public_key" {
   default = ""
 }
 
-variable "projectsprint_start" {
-  type    = bool
-  default = false
-}
-
 variable "projectsprint_start_db" {
   type    = bool
   default = false
 }
 
-variable "projectsprint_start_ecs" {
+variable "projectsprint_start_bucket" {
   type    = bool
   default = false
 }
 
+variable "projectsprint_start_load_test" {
+  type    = bool
+  default = false
+}
+variable "projectsprint_start_ecs" {
+  type    = bool
+  default = false
+}
 variable "projectsprint_db_password" {
   type    = string
   default = ""

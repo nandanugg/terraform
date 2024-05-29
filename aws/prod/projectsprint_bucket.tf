@@ -1,4 +1,5 @@
 module "projectsprint_s3_policy" {
+  count = var.projectsprint_start_bucket ? 1 : 0
   source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
   version = "5.37.1"
 
@@ -32,14 +33,14 @@ module "projectsprint_s3_policy" {
 }
 
 resource "aws_iam_group_policy_attachment" "projectsprint_group_policy_attachment" {
+  count = var.projectsprint_start_bucket ? 1 : 0
   group       = aws_iam_group.projectsprint_developers.name
-  policy_arn = module.projectsprint_s3_policy.arn
+  policy_arn = module.projectsprint_s3_policy[0].arn
 }
 
 # https://registry.terraform.io/modules/terraform-aws-modules/s3-bucket/aws/latest
 module "projectsprint_bucket" {
-  # count = var.projectsprint_start ? 1 : 0
-  count = true ? 1 : 0
+  count = var.projectsprint_start_bucket ? 1 : 0
   source  = "terraform-aws-modules/s3-bucket/aws"
   version = "3.15.1"
 

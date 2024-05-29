@@ -35,19 +35,6 @@ output "ec2_project_sprint_db_address" {
   description = "project_sprint_db_address"
 }
 
-output "projectsprint_iam_account" {
-    value = {
-        for account in module.projectsprint_iam_account :
-          account.iam_user_name => {
-            username           = account.iam_user_name
-            password           = account.iam_user_login_profile_password,
-            console_access_key = account.iam_access_key_id,
-            console_secret_key = account.iam_access_key_secret
-        }
-    }
-    sensitive = true
-}
-
 output "projectsprint_user_credentials" {
   value = {
     for acc, team in var.projectsprint_teams :
@@ -59,11 +46,4 @@ output "projectsprint_user_credentials" {
       }
   }
   sensitive = true
-}
-
-output "projectsprint_ecr_arns" {
-  value = {
-    for ecr in module.projectsprint_ecr :
-      ecr.repository_name => ecr.repository_arn
-  }
 }

@@ -1,7 +1,7 @@
 module "projectspint_ecs_policy" {
   for_each = { 
     for team, config in var.projectsprint_teams : 
-    team => config if config.run_ecs 
+    team => config if config.start_ecs 
   }
   source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
   version = "5.37.1"
@@ -39,7 +39,7 @@ module "projectspint_ecs_policy" {
           "ecs:DescribeClusters",
           "ecs:ListContainerInstances"
         ]
-        Resource = "${module.projectsprint_ecs_cluster[0].cluster_arn}*"
+        Resource = "${aws_ecs_cluster.projectsprint_cluster[0].arn}*"
       },
       {
         Effect = "Allow"
@@ -54,7 +54,6 @@ module "projectspint_ecs_policy" {
         ]
         Resource = [
           "${aws_cloudwatch_log_group.projectsprint_service[each.key].arn}*",
-          "${aws_cloudwatch_log_group.projectsprint_db_service[each.key].arn}*", 
         ]
       },
       {
@@ -64,7 +63,6 @@ module "projectspint_ecs_policy" {
         ]
         Resource = [
           "${aws_ecs_service.projectsprint_ecs_service[each.key].id}*",
-          "${aws_ecs_service.projectsprint_ecs_db_service[each.key].id}*", 
         ]
       },
     ]
@@ -74,7 +72,7 @@ module "projectspint_ecs_policy" {
 resource "aws_iam_user_policy_attachment" "projectsprint_ecs_policy_attachment" {
   for_each = { 
     for team, config in var.projectsprint_teams : 
-    team => config if config.run_ecs 
+    team => config if config.start_ecs 
   }
 
   user      = module.projectsprint_iam_account[each.key].iam_user_name

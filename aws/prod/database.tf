@@ -25,7 +25,7 @@ module "projectsprint-db-sg" {
 # https://registry.terraform.io/modules/terraform-aws-modules/rds/aws/latest
 # https://ap-southeast-1.console.aws.amazon.com/secretsmanager/listsecrets?region=ap-southeast-1
 module "projectsprint-db" {
-  count = var.projectsprint_start ? 1 : 0
+  count = var.projectsprint_start_db ? 1 : 0
   source = "terraform-aws-modules/rds/aws"
   version = "6.5.2"
 
