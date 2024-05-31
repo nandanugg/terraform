@@ -133,6 +133,10 @@ module "projectspint_ecs_independent_user_policy" {
 
           "ecr:CreateRepository",
           "ecr:DeleteRepository",
+          "ecr:DescribeRepositories",
+          "ecr:GetRegistryScanningConfiguration",
+          "ecr:ListTagsForResource",
+          "ecr:GetAuthorizationToken",
 
           "iam:ListRoles",
           "iam:PassRole",

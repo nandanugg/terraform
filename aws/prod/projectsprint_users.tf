@@ -33,6 +33,10 @@ variable "projectsprint_teams" {
     "danimron"        = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
     "ubigantung"      = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
     "dwibi"           = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "alrasyidlathif"  = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "yuhuyuhuuya"     = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "lingstr246"      = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
+    "testuser"        = { start_ecs = false, turbo_ecs = false, independent_ecs = true }
   }
 }
 
