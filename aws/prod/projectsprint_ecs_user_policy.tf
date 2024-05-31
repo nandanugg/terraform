@@ -137,9 +137,12 @@ module "projectspint_ecs_independent_user_policy" {
           "ecr:GetRegistryScanningConfiguration",
           "ecr:ListTagsForResource",
           "ecr:GetAuthorizationToken",
+          "ecr:InitiateLayerUpload",
+          "ecr:BatchDeleteImage",
 
           "iam:ListRoles",
           "iam:PassRole",
+          "iam:GetRole",
 
           "logs:FilterLogEvents",
           "logs:StartLiveTail",
